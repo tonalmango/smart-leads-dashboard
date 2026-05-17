@@ -1,230 +1,345 @@
-<h1 align="center">
-  <img src="https://via.placeholder.com/40/2563eb/ffffff?text=⚡" alt="logo" />
-  <br/>Smart Leads Dashboard
-</h1>
+# Smart Leads Dashboard
 
-<p align="center">
-  A production-grade lead management system built on the MERN stack with TypeScript.
-  <br/>Features JWT auth, role-based access control, Zod validation, dark mode, and CSV export.
-</p>
+A production-grade lead management system built with React, Node.js, and MongoDB. Includes JWT authentication, role-based access control, and comprehensive lead management features.
 
-<p align="center">
-  <img src="https://img.shields.io/badge/React-18-blue?logo=react" />
-  <img src="https://img.shields.io/badge/TypeScript-5-blue?logo=typescript" />
-  <img src="https://img.shields.io/badge/Node.js-20-green?logo=node.js" />
-  <img src="https://img.shields.io/badge/MongoDB-7-green?logo=mongodb" />
-  <img src="https://img.shields.io/badge/Docker-ready-blue?logo=docker" />
-</p>
+## Features
 
----
+**Authentication & Authorization**
+- JWT-based authentication with bcrypt password hashing
+- Role-based access control (Admin and Sales roles)
+- Persistent authentication tokens using Zustand
 
-## ✨ Features
+**Lead Management**
+- Full CRUD operations for lead records
+- Advanced filtering by status and source
+- Debounced text search across lead fields
+- Server-side pagination (10 items per page)
+- Lead statistics and pipeline overview
 
-| Category | Feature |
-|----------|---------|
-| **Auth** | JWT register / login · bcrypt password hashing · token persistence |
-| **RBAC** | Admin (full access) · Sales (own leads only, no delete / no CSV export) |
-| **Leads** | Full CRUD · status & source filtering · debounced text search · sort |
-| **Pagination** | Server-side · 10 per page · full metadata |
-| **CSV Export** | Admin-only · respects active filters |
-| **Dashboard** | Live stats from aggregation endpoint · progress bars · pipeline status |
-| **Validation** | Zod schemas on every route (body, query, params) |
-| **UI** | Tailwind CSS · dark mode toggle · loading / empty / error states |
-| **DevOps** | Docker Compose · multi-stage Dockerfiles · Nginx reverse proxy |
+**Admin Features**
+- CSV export functionality respecting active filters
+- Complete access to all leads and operations
+- User and lead management
 
----
+**Sales Features**
+- View and manage assigned leads
+- Create and edit lead records
+- Limited to their own data with no delete access
 
-## 🏗️ Architecture
+**Technical Features**
+- Full TypeScript implementation with strict mode
+- Zod validation on all API endpoints
+- Dark mode toggle for UI
+- Responsive design with Tailwind CSS
+- Docker Compose for production deployment
+- Multi-stage Docker builds for optimization
+
+## Project Structure
 
 ```
 smart-leads-dashboard/
 ├── backend/
-│   └── src/
-│       ├── config/           # db.ts, env.ts
-│       ├── modules/
-│       │   ├── auth/         # schemas · service · controller · routes
-│       │   └── leads/        # schemas · service · controller · routes
-│       ├── middleware/        # auth · errorHandler · validate (Zod)
-│       ├── models/            # User · Lead (Mongoose)
-│       ├── types/             # Shared TS interfaces & enums
-│       └── utils/             # AppError · asyncHandler · jwt · response
+│   ├── src/
+│   │   ├── config/
+│   │   │   ├── db.ts          MongoDB connection setup
+│   │   │   └── env.ts         Environment variable configuration
+│   │   ├── modules/
+│   │   │   ├── auth/          Authentication routes and services
+│   │   │   └── leads/         Lead CRUD routes and services
+│   │   ├── middleware/
+│   │   │   ├── auth.ts        JWT verification and role authorization
+│   │   │   ├── errorHandler.ts Error handling and response formatting
+│   │   │   └── validate.ts    Zod schema validation
+│   │   ├── models/
+│   │   │   ├── User.ts        User schema with Mongoose
+│   │   │   └── Lead.ts        Lead schema with Mongoose
+│   │   ├── types/             TypeScript interfaces and enums
+│   │   └── utils/             Helper functions and utilities
+│   ├── package.json
+│   ├── tsconfig.json
+│   └── Dockerfile
 │
 ├── frontend/
-│   └── src/
-│       ├── components/
-│       │   ├── auth/          # ProtectedRoute
-│       │   ├── layout/        # Layout · Sidebar · Header
-│       │   ├── leads/         # LeadTable · LeadFiltersBar · LeadFormModal
-│       │   │                  # LeadForm · Pagination · StatsCards
-│       │   └── ui/            # Badge · Spinner · LoadingState · EmptyState
-│       │                      # ErrorState · ErrorMessage · Modal
-│       ├── config/            # constants.ts (no hardcoded values elsewhere)
-│       ├── hooks/             # useLeads · useLeadStats · useDebounce
-│       ├── pages/             # DashboardPage · LeadsPage · LoginPage · RegisterPage
-│       ├── services/          # apiClient (Axios + interceptors) · auth.service · lead.service
-│       ├── store/             # authStore (Zustand + persist) · themeStore
-│       └── types/             # Shared TS interfaces & enums
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── auth/          Authentication components
+│   │   │   ├── layout/        Page layout components
+│   │   │   ├── leads/         Lead management components
+│   │   │   └── ui/            Reusable UI components
+│   │   ├── config/            Application constants
+│   │   ├── hooks/             Custom React hooks
+│   │   ├── pages/             Page components (Login, Register, Dashboard)
+│   │   ├── services/          API client and service functions
+│   │   ├── store/             Zustand state management
+│   │   ├── types/             TypeScript types and interfaces
+│   │   └── utils/             Utility functions
+│   ├── package.json
+│   ├── tsconfig.json
+│   ├── vite.config.ts
+│   ├── tailwind.config.js
+│   └── Dockerfile
 │
-├── docker-compose.yml
-├── .env.example
-└── README.md
+├── docker-compose.yml         Multi-service orchestration
+├── vercel.json                Vercel deployment configuration
+├── API_DOCUMENTATION.md       Complete API reference
+└── README.md                  This file
 ```
 
----
-
-## 🚀 Quick Start
+## Getting Started
 
 ### Prerequisites
 
-- Node.js ≥ 20
-- MongoDB (local) **or** Docker + Docker Compose
+- Node.js version 20 or later
+- npm or yarn package manager
+- MongoDB (for development) or Docker + Docker Compose
+- Git for version control
 
----
+### Option 1: Docker Compose (Recommended for Production)
 
-### Option A — Docker Compose (recommended)
+This approach starts MongoDB, the Express API, and React frontend with Nginx all in containers.
 
 ```bash
-# 1. Clone
-git clone <your-repo-url>
+# Clone the repository
+git clone https://github.com/tonalmango/smart-leads-dashboard.git
 cd smart-leads-dashboard
 
-# 2. Configure secrets
+# Copy environment file
 cp .env.example .env
-# Edit .env: set JWT_SECRET to a long random string
 
-# 3. Build and run
+# Edit .env and set these required values:
+# - MONGODB_URI: Your MongoDB Atlas connection string
+# - JWT_SECRET: A long random string (32+ characters)
+# - CLIENT_URL: Your frontend URL (http://localhost for Docker)
+
+# Build and start containers
 docker-compose up --build
-
-# 4. Open
-open http://localhost
 ```
 
-Starts MongoDB, the Express API on `:5000`, and the React app on `:80` via Nginx.
+The application will be available at `http://localhost`
+- Frontend: http://localhost/
+- API: http://localhost:5000/api
+- MongoDB: Runs in a container (data persisted in `mongo-data` volume)
 
-To stop:
-
+To stop the services:
 ```bash
-docker-compose down          # keep data
-docker-compose down -v       # remove data volumes too
+docker-compose down      # Stop but keep data
+docker-compose down -v   # Stop and remove all volumes
 ```
 
----
+### Option 2: Local Development
 
-### Option B — Local Development
+Run the backend and frontend separately on your machine.
 
-#### Backend
+**Backend Setup**
 
 ```bash
 cd backend
-cp ../.env.example .env
-# Set MONGODB_URI, JWT_SECRET, etc.
+
+# Install dependencies
 npm install
-npm run dev          # ts-node-dev with hot-reload on :5000
+
+# Copy environment file
+cp ../.env.example .env
+
+# Edit .env with your configuration:
+# - MONGODB_URI: MongoDB connection string
+# - JWT_SECRET: Your JWT signing secret
+# - Other variables as needed
+
+# Start development server with hot-reload
+npm run dev
 ```
 
-#### Frontend
+The API will run on `http://localhost:5000`
+
+**Frontend Setup**
+
+In a new terminal window:
 
 ```bash
 cd frontend
-# Create frontend/.env
-echo "VITE_API_URL=http://localhost:5000/api" > .env
+
+# Install dependencies
 npm install
-npm run dev          # Vite dev server on :5173
+
+# Create environment file
+echo "VITE_API_URL=http://localhost:5000/api" > .env
+
+# Start development server
+npm run dev
 ```
 
----
+The frontend will run on `http://localhost:5173`
 
-## 🔐 Role-Based Access Control
+### Production Deployment
 
-| Action | Admin | Sales |
-|--------|:-----:|:-----:|
-| View all leads | ✅ | ❌ (own only) |
-| Create lead | ✅ | ✅ |
-| Edit own lead | ✅ | ✅ |
-| Delete lead | ✅ | ❌ |
-| Export CSV | ✅ | ❌ |
-| View dashboard stats | ✅ | ✅ (own) |
+This project is configured for deployment on Vercel (frontend) and Render (backend).
 
-Register a user and set `"role": "admin"` in the request body to create an admin account.
+**Frontend (Vercel)**
+- Automatically deploys from GitHub
+- Configuration: `vercel.json` handles SPA routing
+- Environment: Set `VITE_API_URL` in Vercel dashboard
 
----
+**Backend (Render)**
+- Deploy from GitHub or use `render.yaml`
+- Environment variables required:
+  - `MONGODB_URI`: MongoDB Atlas connection string
+  - `JWT_SECRET`: Your JWT secret key
+  - `NODE_ENV`: Set to `production`
+  - `CLIENT_URL`: Your frontend URL for CORS
 
-## 🌐 API Reference
+## Access Control
 
-See **[API_DOCUMENTATION.md](./API_DOCUMENTATION.md)** for the full endpoint reference.
+The application implements role-based access control with two roles:
 
-Base URL: `http://localhost:5000/api`  
-All protected routes require: `Authorization: Bearer <token>`
+**Admin**
+- Can create, read, update, and delete leads
+- Can export leads to CSV file
+- Can view all leads in the system
+- Can manage user accounts
 
----
+**Sales**
+- Can create, read, and update lead records
+- Can search and filter leads
+- Cannot delete leads
+- Cannot export to CSV
+- Cannot manage other users' data
 
-## 🧩 Tech Stack
+To register as admin, include `"role": "admin"` when calling the registration endpoint or select "Admin" in the role dropdown during registration.
 
-### Backend
-| Package | Purpose |
-|---------|---------|
-| Express 4 | HTTP framework |
-| Mongoose 8 | MongoDB ODM |
-| Zod 3 | Request validation (body, query, params) |
-| jsonwebtoken | JWT generation & verification |
-| bcryptjs | Password hashing (salt rounds: 12) |
-| TypeScript 5 (strict) | Type safety |
+## API Documentation
 
-### Frontend
-| Package | Purpose |
-|---------|---------|
-| React 18 + Vite | UI framework & build tool |
-| React Router 6 | Client-side routing |
-| TanStack Query 5 | Server state, caching, refetch |
-| Zustand + persist | Auth & theme state |
-| React Hook Form | Form state & validation |
-| Axios | HTTP client with interceptors |
-| Tailwind CSS 3 | Utility-first styling |
-| lucide-react | Icon set |
+For complete API endpoint documentation, see [API_DOCUMENTATION.md](./API_DOCUMENTATION.md).
 
----
+**Base URL:** `http://localhost:5000/api` (development) or your deployed backend URL
 
-## 🐳 Docker Details
+**Authentication:** All protected endpoints require the `Authorization: Bearer <token>` header with a valid JWT token.
 
-```yaml
-services:
-  mongo    # MongoDB 7 with health-check
-  backend  # Node 20 multi-stage build → production binary
-  frontend # Node 20 build → Nginx serving static files + /api proxy
+## Technology Stack
+
+**Backend**
+- Express.js 4 - HTTP framework and routing
+- Node.js 20 - JavaScript runtime
+- MongoDB 7 - NoSQL database
+- Mongoose 8 - MongoDB object modeling
+- TypeScript 5 - Static type checking (strict mode)
+- Zod 3 - Runtime schema validation
+- jsonwebtoken - JWT generation and verification
+- bcryptjs - Password hashing (12 salt rounds)
+
+**Frontend**
+- React 18 - UI library
+- Vite 5 - Build tool and dev server
+- TypeScript 5 - Static type checking
+- React Router 6 - Client-side routing
+- Zustand + persist - State management with persistence
+- React Hook Form - Form state and validation
+- Axios - HTTP client with request/response interceptors
+- Tailwind CSS 3 - Utility-first CSS framework
+- Lucide React - Icon set
+
+**DevOps & Deployment**
+- Docker - Containerization
+- Docker Compose - Multi-container orchestration
+- Nginx - Reverse proxy and static file serving
+- Vercel - Frontend deployment
+- Render - Backend deployment
+
+## Environment Configuration
+
+**Backend (.env file)**
+
+Required variables:
+- `MONGODB_URI` - MongoDB Atlas connection string
+- `JWT_SECRET` - Secret key for JWT signing (minimum 32 characters recommended)
+- `JWT_EXPIRES_IN` - Token expiration time (default: `7d`)
+- `PORT` - API server port (default: `5000`)
+- `NODE_ENV` - Environment (`development`, `production`)
+- `CLIENT_URL` - Frontend URL for CORS configuration
+
+**Frontend (.env file)**
+
+- `VITE_API_URL` - Backend API base URL (e.g., `http://localhost:5000/api`)
+
+## Building for Production
+
+**Build backend**
+```bash
+cd backend
+npm run build    # Compiles TypeScript to JavaScript in dist/
+npm start        # Runs compiled code
 ```
 
-The Nginx config proxies `/api/*` → `backend:5000` so the frontend and API share port 80 in production.
-
----
-
-## ⚙️ Environment Variables
-
-| Variable | Service | Description | Default |
-|----------|---------|-------------|---------|
-| `MONGODB_URI` | backend | MongoDB connection string | — (required) |
-| `JWT_SECRET` | backend | JWT signing secret | — (required) |
-| `JWT_EXPIRES_IN` | backend | Token expiry | `7d` |
-| `PORT` | backend | HTTP port | `5000` |
-| `NODE_ENV` | backend | Environment | `development` |
-| `CLIENT_URL` | backend | CORS allowed origin | `http://localhost:5173` |
-| `VITE_API_URL` | frontend | API base URL | `/api` |
-
----
-
-## 📝 Commit Convention
-
-This project follows [Conventional Commits](https://www.conventionalcommits.org/):
-
-```
-feat: add CSV export with active filter support
-fix: restrict export endpoint to Admin role
-refactor: extract lead business logic into service layer
-docs: add API_DOCUMENTATION.md
-chore: install zod v3 for request validation
+**Build frontend**
+```bash
+cd frontend
+npm run build    # Creates optimized build in dist/
+npm preview      # Preview production build locally
 ```
 
----
+## Docker Architecture
 
-## 📄 License
+The docker-compose.yml orchestrates three services:
 
-MIT
+**MongoDB Service**
+- Image: mongodb:7
+- Port: 27017 (internal only)
+- Volume: `mongo-data` for persistent storage
+- Health check: Verifies database is ready before other services start
+
+**Backend Service**
+- Multi-stage build: Compiles TypeScript in builder stage, runs from compiled code
+- Port: 5000
+- Depends on: MongoDB service
+- Environment: Reads from .env file
+
+**Frontend Service**
+- Multi-stage build: Builds React app with Vite, serves with Nginx
+- Port: 80
+- Nginx config: Proxies `/api/*` requests to backend, serves SPA with client-side routing
+- Depends on: Backend service
+
+## Troubleshooting
+
+**Port already in use**
+```bash
+# Find process using port 5000 (Linux/Mac)
+lsof -i :5000
+# Kill process
+kill -9 <PID>
+
+# Windows: Use netstat to find process
+netstat -ano | findstr :5000
+```
+
+**MongoDB connection issues**
+- Verify connection string in .env
+- For MongoDB Atlas, ensure IP whitelist includes your machine
+- Check firewall/VPN settings
+
+**CORS errors in browser**
+- Verify `CLIENT_URL` matches your frontend URL
+- For production, set `CLIENT_URL` to your deployed frontend domain
+- Clear browser cache and try hard refresh
+
+**Docker containers not starting**
+```bash
+# Check logs
+docker-compose logs backend
+docker-compose logs frontend
+
+# Rebuild containers
+docker-compose down
+docker-compose up --build
+```
+
+## Contributing
+
+1. Create a feature branch: `git checkout -b feature/your-feature`
+2. Make your changes following conventional commits
+3. Push to your fork: `git push origin feature/your-feature`
+4. Open a pull request with description of changes
+
+## License
+
+MIT License - see LICENSE file for details
